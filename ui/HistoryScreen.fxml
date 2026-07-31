@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+
+<BorderPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="ui.HistoryController"
+    prefWidth="600"
+    prefHeight="500">
+
+    <!-- ── TOP TOOLBAR ── -->
+    <top>
+        <HBox
+            styleClass="top-bar"
+            alignment="CENTER_LEFT"
+            spacing="10">
+            <padding>
+                <Insets top="10" right="15"
+                        bottom="10" left="15"/>
+            </padding>
+
+            <Label
+                text="📋 Ride History"
+                styleClass="app-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button
+                text="← Back"
+                styleClass="btn-secondary"
+                onAction="#onBack"/>
+
+        </HBox>
+    </top>
+
+    <!-- ── CENTER CONTENT ── -->
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="15" right="15"
+                        bottom="15" left="15"/>
+            </padding>
+
+            <!-- Stats Bar -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="Total Rides:"/>
+                <Label
+                    fx:id="totalRidesLabel"
+                    text="0"
+                    styleClass="result-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label
+                    fx:id="statusLabel"
+                    text=""
+                    styleClass="result-label"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Ride History List -->
+            <ListView
+                fx:id="historyListView"
+                prefHeight="350"
+                styleClass="list-view"/>
+
+            <Separator/>
+
+            <!-- Bottom Buttons -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button
+                    fx:id="refreshBtn"
+                    text="🔄 Refresh"
+                    styleClass="btn-secondary"
+                    onAction="#onRefresh"/>
+
+                <Button
+                    fx:id="clearBtn"
+                    text="🗑️ Clear All"
+                    styleClass="btn-danger"
+                    onAction="#onClearAll"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

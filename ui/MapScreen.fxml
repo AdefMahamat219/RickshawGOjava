@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="ui.MapController"
+    prefWidth="900"
+    prefHeight="650">
+
+    <!-- ── TOP TOOLBAR ── -->
+    <top>
+        <HBox
+            styleClass="top-bar"
+            alignment="CENTER_LEFT"
+            spacing="10">
+            <padding>
+                <Insets top="10" right="15"
+                        bottom="10" left="15"/>
+            </padding>
+
+            <!-- App Title -->
+            <Label
+                text="🛺 RickshawGo"
+                styleClass="app-title"/>
+
+            <!-- Spacer pushes buttons to right -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Navigation Buttons -->
+            <Button
+                fx:id="historyBtn"
+                text="📋 History"
+                styleClass="btn-secondary"
+                onAction="#onOpenHistory"/>
+
+            <Button
+                fx:id="savedBtn"
+                text="⭐ Saved"
+                styleClass="btn-secondary"
+                onAction="#onOpenSaved"/>
+
+            <Button
+                fx:id="settingsBtn"
+                text="⚙️ Settings"
+                styleClass="btn-secondary"
+                onAction="#onOpenSettings"/>
+
+        </HBox>
+    </top>
+
+    <!-- ── LEFT SIDE PANEL ── -->
+    <left>
+        <VBox
+            styleClass="side-panel"
+            spacing="10"
+            prefWidth="220">
+            <padding>
+                <Insets top="15" right="15"
+                        bottom="15" left="15"/>
+            </padding>
+
+            <!-- Panel Title -->
+            <Label
+                text="🗺️ Select Route"
+                styleClass="panel-title"/>
+
+            <Separator/>
+
+            <!-- From Location -->
+            <Label text="📍 From:"/>
+            <ComboBox
+                fx:id="fromCombo"
+                prefWidth="190"
+                promptText="Select start..."/>
+
+            <!-- To Location -->
+            <Label text="📍 To:"/>
+            <ComboBox
+                fx:id="toCombo"
+                prefWidth="190"
+                promptText="Select destination..."/>
+
+            <!-- Find Route Button -->
+            <Button
+                fx:id="findRouteBtn"
+                text="🔍 Find Route"
+                styleClass="btn-primary"
+                prefWidth="190"
+                onAction="#onFindRoute"/>
+
+            <!-- Clear Button -->
+            <Button
+                fx:id="clearBtn"
+                text="🔄 Clear"
+                styleClass="btn-secondary"
+                prefWidth="190"
+                onAction="#onClear"/>
+
+            <Separator/>
+
+            <!-- Results Section -->
+            <Label
+                text="📊 Results"
+                styleClass="panel-title"/>
+
+            <Label text="📏 Distance:"/>
+            <Label
+                fx:id="distanceLabel"
+                text="-- km"
+                styleClass="result-label"/>
+
+            <Label text="💰 Estimated Fare:"/>
+            <Label
+                fx:id="fareLabel"
+                text="-- BDT"
+                styleClass="fare-label"/>
+
+            <Label text="⏰ Ride Type:"/>
+            <Label
+                fx:id="timeLabel"
+                text="--"
+                styleClass="result-label"/>
+
+            <Separator/>
+
+            <!-- Save Button -->
+            <Button
+                fx:id="saveBtn"
+                text="💾 Save Ride"
+                styleClass="btn-primary"
+                prefWidth="190"
+                disable="true"
+                onAction="#onSaveRide"/>
+
+        </VBox>
+    </left>
+
+    <!-- ── CENTER MAP CANVAS ── -->
+    <center>
+        <StackPane styleClass="map-container">
+            <Canvas
+                fx:id="mapCanvas"
+                width="670"
+                height="600"/>
+        </StackPane>
+    </center>
+
+</BorderPane>

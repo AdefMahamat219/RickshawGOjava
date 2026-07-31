@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="ui.SavedController"
+    prefWidth="500"
+    prefHeight="520">
+
+    <!-- ── TOP TOOLBAR ── -->
+    <top>
+        <HBox
+            styleClass="top-bar"
+            alignment="CENTER_LEFT"
+            spacing="10">
+            <padding>
+                <Insets top="10" right="15"
+                        bottom="10" left="15"/>
+            </padding>
+
+            <Label
+                text="⭐ Saved Locations"
+                styleClass="app-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button
+                text="← Back"
+                styleClass="btn-secondary"
+                onAction="#onBack"/>
+
+        </HBox>
+    </top>
+
+    <!-- ── CENTER CONTENT ── -->
+    <center>
+        <VBox spacing="12">
+            <padding>
+                <Insets top="15" right="15"
+                        bottom="15" left="15"/>
+            </padding>
+
+            <!-- Add New Location Section -->
+            <Label
+                text="➕ Add New Location"
+                styleClass="panel-title"/>
+
+            <Separator/>
+
+            <GridPane hgap="10" vgap="10">
+
+                <!-- Location Label -->
+                <Label
+                    text="Label Name:"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="0"/>
+                <TextField
+                    fx:id="nameField"
+                    promptText="e.g. Home, Office..."
+                    prefWidth="200"
+                    GridPane.columnIndex="1"
+                    GridPane.rowIndex="0"/>
+
+                <!-- Location Node -->
+                <Label
+                    text="Select Location:"
+                    GridPane.columnIndex="0"
+                    GridPane.rowIndex="1"/>
+                <ComboBox
+                    fx:id="nodeCombo"
+                    prefWidth="200"
+                    promptText="Select a location..."
+                    GridPane.columnIndex="1"
+                    GridPane.rowIndex="1"/>
+
+            </GridPane>
+
+            <!-- Add Button -->
+            <HBox alignment="CENTER_RIGHT">
+                <Button
+                    fx:id="addBtn"
+                    text="➕ Add Location"
+                    styleClass="btn-primary"
+                    onAction="#onAddLocation"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Saved Locations List -->
+            <Label
+                text="📋 Your Saved Locations"
+                styleClass="panel-title"/>
+
+            <!-- Stats -->
+            <HBox spacing="10"
+                  alignment="CENTER_LEFT">
+                <Label text="Total Saved:"/>
+                <Label
+                    fx:id="totalSavedLabel"
+                    text="0"
+                    styleClass="result-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label
+                    fx:id="statusLabel"
+                    text=""
+                    styleClass="result-label"/>
+            </HBox>
+
+            <!-- List View -->
+            <ListView
+                fx:id="savedListView"
+                prefHeight="200"
+                styleClass="list-view"/>
+
+            <Separator/>
+
+            <!-- Bottom Buttons -->
+            <HBox spacing="10"
+                  alignment="CENTER_RIGHT">
+                <Button
+                    text="🔄 Refresh"
+                    styleClass="btn-secondary"
+                    onAction="#onRefresh"/>
+                <Button
+                    fx:id="deleteBtn"
+                    text="🗑️ Delete Selected"
+                    styleClass="btn-danger"
+                    disable="true"
+                    onAction="#onDeleteSelected"/>
+                <Button
+                    fx:id="clearAllBtn"
+                    text="🗑️ Clear All"
+                    styleClass="btn-danger"
+                    onAction="#onClearAll"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
