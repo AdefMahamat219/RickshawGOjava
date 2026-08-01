@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,8 +16,8 @@
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="ui.MapController"
-    prefWidth="900"
-    prefHeight="650">
+    prefWidth="1000"
+    prefHeight="680">
 
     <!-- ── TOP TOOLBAR ── -->
     <top>
@@ -29,15 +30,12 @@
                         bottom="10" left="15"/>
             </padding>
 
-            <!-- App Title -->
             <Label
                 text="🛺 RickshawGo"
                 styleClass="app-title"/>
 
-            <!-- Spacer pushes buttons to right -->
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Navigation Buttons -->
             <Button
                 fx:id="historyBtn"
                 text="📋 History"
@@ -63,11 +61,11 @@
     <left>
         <VBox
             styleClass="side-panel"
-            spacing="10"
-            prefWidth="220">
+            spacing="8"
+            prefWidth="210">
             <padding>
-                <Insets top="15" right="15"
-                        bottom="15" left="15"/>
+                <Insets top="12" right="12"
+                        bottom="12" left="12"/>
             </padding>
 
             <!-- Panel Title -->
@@ -81,35 +79,34 @@
             <Label text="📍 From:"/>
             <ComboBox
                 fx:id="fromCombo"
-                prefWidth="190"
+                prefWidth="185"
                 promptText="Select start..."/>
 
             <!-- To Location -->
             <Label text="📍 To:"/>
             <ComboBox
                 fx:id="toCombo"
-                prefWidth="190"
+                prefWidth="185"
                 promptText="Select destination..."/>
 
-            <!-- Find Route Button -->
+            <!-- Buttons -->
             <Button
                 fx:id="findRouteBtn"
                 text="🔍 Find Route"
                 styleClass="btn-primary"
-                prefWidth="190"
+                prefWidth="185"
                 onAction="#onFindRoute"/>
 
-            <!-- Clear Button -->
             <Button
                 fx:id="clearBtn"
                 text="🔄 Clear"
                 styleClass="btn-secondary"
-                prefWidth="190"
+                prefWidth="185"
                 onAction="#onClear"/>
 
             <Separator/>
 
-            <!-- Results Section -->
+            <!-- Results -->
             <Label
                 text="📊 Results"
                 styleClass="panel-title"/>
@@ -134,12 +131,22 @@
 
             <Separator/>
 
+            <!-- Route Path -->
+            <Label text="🛣️ Route:"/>
+            <Label
+                fx:id="routeLabel"
+                text="--"
+                styleClass="result-label"
+                wrapText="true"/>
+
+            <Separator/>
+
             <!-- Save Button -->
             <Button
                 fx:id="saveBtn"
                 text="💾 Save Ride"
                 styleClass="btn-primary"
-                prefWidth="190"
+                prefWidth="185"
                 disable="true"
                 onAction="#onSaveRide"/>
 
@@ -148,12 +155,20 @@
 
     <!-- ── CENTER MAP CANVAS ── -->
     <center>
-        <StackPane styleClass="map-container">
-            <Canvas
-                fx:id="mapCanvas"
-                width="670"
-                height="600"/>
-        </StackPane>
+        <ScrollPane
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true"
+            styleClass="map-container">
+            <content>
+                <StackPane styleClass="map-container">
+                    <Canvas
+                        fx:id="mapCanvas"
+                        width="780"
+                        height="620"/>
+                </StackPane>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>
