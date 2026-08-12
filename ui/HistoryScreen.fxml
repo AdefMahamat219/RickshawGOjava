@@ -7,51 +7,60 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="ui.HistoryController"
-    prefWidth="600"
-    prefHeight="500">
+    prefWidth="620"
+    prefHeight="520">
 
-    <!-- ── TOP TOOLBAR ── -->
+    <!-- TOP -->
     <top>
         <HBox
             styleClass="top-bar"
             alignment="CENTER_LEFT"
             spacing="10">
             <padding>
-                <Insets top="10" right="15"
-                        bottom="10" left="15"/>
+                <Insets top="0" right="20"
+                        bottom="0" left="20"/>
             </padding>
-
-            <Label
-                text="📋 Ride History"
-                styleClass="app-title"/>
-
+            <VBox alignment="CENTER_LEFT"
+                  spacing="1">
+                <Label
+                    text="📋 Ride History"
+                    styleClass="app-title"/>
+                <Label
+                    text="Your past fare estimates"
+                    styleClass="app-subtitle"/>
+            </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-
             <Button
                 text="← Back"
-                styleClass="btn-secondary"
+                styleClass="btn-toolbar"
                 onAction="#onBack"/>
-
         </HBox>
     </top>
 
-    <!-- ── CENTER CONTENT ── -->
+    <!-- CENTER -->
     <center>
-        <VBox spacing="10">
+        <VBox spacing="0">
             <padding>
-                <Insets top="15" right="15"
-                        bottom="15" left="15"/>
+                <Insets top="20" right="20"
+                        bottom="20" left="20"/>
             </padding>
 
-            <!-- Stats Bar -->
-            <HBox spacing="20" alignment="CENTER_LEFT">
-                <Label text="Total Rides:"/>
+            <!-- Stats Row -->
+            <HBox
+                spacing="10"
+                alignment="CENTER_LEFT">
+                <VBox.margin>
+                    <Insets bottom="16"/>
+                </VBox.margin>
+                <Label
+                    text="Total Rides"
+                    styleClass="muted-label"/>
                 <Label
                     fx:id="totalRidesLabel"
                     text="0"
@@ -60,30 +69,42 @@
                 <Label
                     fx:id="statusLabel"
                     text=""
-                    styleClass="result-label"/>
+                    styleClass="success-label"/>
             </HBox>
 
-            <Separator/>
+            <Separator>
+                <VBox.margin>
+                    <Insets bottom="16"/>
+                </VBox.margin>
+            </Separator>
 
-            <!-- Ride History List -->
+            <!-- List -->
             <ListView
                 fx:id="historyListView"
-                prefHeight="350"
-                styleClass="list-view"/>
+                prefHeight="360"
+                styleClass="list-view">
+                <VBox.margin>
+                    <Insets bottom="16"/>
+                </VBox.margin>
+            </ListView>
 
-            <Separator/>
+            <Separator>
+                <VBox.margin>
+                    <Insets bottom="16"/>
+                </VBox.margin>
+            </Separator>
 
-            <!-- Bottom Buttons -->
-            <HBox spacing="10" alignment="CENTER_RIGHT">
+            <!-- Buttons -->
+            <HBox spacing="8"
+                  alignment="CENTER_RIGHT">
                 <Button
                     fx:id="refreshBtn"
-                    text="🔄 Refresh"
+                    text="🔄  Refresh"
                     styleClass="btn-secondary"
                     onAction="#onRefresh"/>
-
                 <Button
                     fx:id="clearBtn"
-                    text="🗑️ Clear All"
+                    text="🗑️  Clear All"
                     styleClass="btn-danger"
                     onAction="#onClearAll"/>
             </HBox>
