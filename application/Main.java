@@ -15,7 +15,7 @@ public class Main extends Application {
 
     // ── Window Settings ──────────────────────────────────
     private static final String TITLE  = "🛺 RickshawGo";
-    private static final double WIDTH  = 900;
+    private static final double WIDTH  = 1000;
     private static final double HEIGHT = 650;
 
     // ── Start Method ─────────────────────────────────────
