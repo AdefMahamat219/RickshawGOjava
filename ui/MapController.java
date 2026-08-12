@@ -65,8 +65,8 @@ public class MapController {
     private SavedLocationDAO savedLocationDAO;
 
     // ── Canvas Size Constants ────────────────────────────
-    private static final double CANVAS_W = 780;
-    private static final double CANVAS_H = 620;
+    private static final double CANVAS_W = 860;
+    private static final double CANVAS_H = 660;
 
     // ── Initialize ───────────────────────────────────────
     @FXML
@@ -112,7 +112,6 @@ public class MapController {
         String fromId = fromCombo.getValue();
         String toId   = toCombo.getValue();
 
-        // validate
         if (fromId == null || toId == null) {
             showAlert("⚠️ Warning",
                 "Please select both locations!");
@@ -125,7 +124,6 @@ public class MapController {
             return;
         }
 
-        // run Dijkstra
         currentDistance = Dijkstra
             .findShortestDistance(
                 graph, fromId, toId);
@@ -141,18 +139,15 @@ public class MapController {
             return;
         }
 
-        // detect time
         currentIsNight = FareCalculator.isNightTime();
         currentIsPeak  = FareCalculator.isPeakHour();
 
-        // calculate fare
         currentFare = FareCalculator.calculate(
             currentDistance,
             currentIsNight,
             currentIsPeak
         );
 
-        // update result labels
         distanceLabel.setText(String.format(
             "%.1f km", currentDistance));
         fareLabel.setText(String.format(
@@ -166,13 +161,8 @@ public class MapController {
             timeLabel.setText("☀️ Normal Rate");
         }
 
-        // show route path as text
         routeLabel.setText(buildRouteText());
-
-        // draw map with highlighted route
         drawMap(currentPath);
-
-        // enable save button
         saveBtn.setDisable(false);
     }
 
@@ -187,8 +177,6 @@ public class MapController {
             Location l = locations.get(id);
             String name = l != null ?
                 l.getName() : id;
-
-            // shorten name for display
             sb.append(name);
             if (i < currentPath.size() - 1) {
                 sb.append(" → ");
@@ -267,77 +255,223 @@ public class MapController {
         GraphicsContext gc =
             mapCanvas.getGraphicsContext2D();
 
-        // clear canvas
+        // clear
         gc.clearRect(0, 0, CANVAS_W, CANVAS_H);
 
-        // background gradient effect
-        gc.setFill(Color.web("#E8F5E9"));
+        // ── Background ───────────────────────────────
+        gc.setFill(Color.web("#E8F0E8"));
         gc.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-        // border
-        gc.setStroke(Color.web("#BDBDBD"));
-        gc.setLineWidth(1);
-        gc.strokeRect(1, 1,
-            CANVAS_W - 2, CANVAS_H - 2);
+        // ── Grid lines ───────────────────────────────
+        drawGridLines(gc);
 
-        // map title
-        gc.setFill(Color.web("#1A1A2E"));
-        gc.setFont(Font.font("Arial",
-            FontWeight.BOLD, 16));
-        gc.fillText(
-            "📍 Board Bazar Area — Gazipur",
-            15, 30);
+        // ── Area blocks ──────────────────────────────
+        drawAreaBlocks(gc);
 
-        // draw all roads first (under nodes)
+        // ── Main highway ─────────────────────────────
+        drawHighway(gc);
+
+        // ── All roads ────────────────────────────────
         drawAllRoads(gc);
 
-        // highlight shortest path
+        // ── Highlight path ───────────────────────────
         if (highlightPath != null &&
                 highlightPath.size() > 1) {
             drawHighlightedPath(gc, highlightPath);
         }
 
-        // draw all nodes on top
+        // ── All nodes ────────────────────────────────
         drawAllNodes(gc, highlightPath);
 
-        // draw distance labels on roads
+        // ── Distance labels ──────────────────────────
         drawDistanceLabels(gc);
 
-        // draw legend
+        // ── Compass ──────────────────────────────────
+        drawCompass(gc);
+
+        // ── Title ────────────────────────────────────
+        drawTitle(gc);
+
+        // ── Legend ───────────────────────────────────
         drawLegend(gc);
+
+        // ── Scale bar ────────────────────────────────
+        drawScaleBar(gc);
+    }
+
+    // ── Draw Grid Lines ──────────────────────────────────
+    private void drawGridLines(GraphicsContext gc) {
+        gc.setStroke(Color.web("#D0DAD0", 0.5));
+        gc.setLineWidth(0.5);
+        for (int x = 0; x < CANVAS_W; x += 50) {
+            gc.strokeLine(x, 0, x, CANVAS_H);
+        }
+        for (int y = 0; y < CANVAS_H; y += 50) {
+            gc.strokeLine(0, y, CANVAS_W, y);
+        }
+    }
+
+    // ── Draw Area Blocks ─────────────────────────────────
+    private void drawAreaBlocks(GraphicsContext gc) {
+        // IUT campus
+        gc.setFill(Color.web("#C8E6C9", 0.6));
+        gc.fillRoundRect(100, 230, 160, 140, 10, 10);
+        gc.setStroke(Color.web("#81C784", 0.8));
+        gc.setLineWidth(1.5);
+        gc.strokeRoundRect(100, 230, 160, 140, 10, 10);
+        gc.setFill(Color.web("#388E3C", 0.8));
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 9));
+        gc.fillText("IUT Campus", 140, 295);
+
+        // National University area
+        gc.setFill(Color.web("#C8E6C9", 0.6));
+        gc.fillRoundRect(290, 30, 180, 90, 10, 10);
+        gc.setStroke(Color.web("#81C784", 0.8));
+        gc.setLineWidth(1.5);
+        gc.strokeRoundRect(290, 30, 180, 90, 10, 10);
+        gc.setFill(Color.web("#388E3C", 0.8));
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 9));
+        gc.fillText("Nat. University", 318, 75);
+
+        // Board Bazar main area
+        gc.setFill(Color.web("#FFF9C4", 0.5));
+        gc.fillRoundRect(320, 350, 200, 200, 10, 10);
+        gc.setStroke(Color.web("#F9A825", 0.6));
+        gc.setLineWidth(1.5);
+        gc.strokeRoundRect(320, 350, 200, 200, 10, 10);
+        gc.setFill(Color.web("#F57F17", 0.8));
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 9));
+        gc.fillText("Board Bazar Area", 345, 375);
+
+        // water body
+        gc.setFill(Color.web("#B3E5FC", 0.7));
+        gc.fillOval(620, 420, 80, 50);
+        gc.setStroke(Color.web("#0288D1", 0.5));
+        gc.setLineWidth(1);
+        gc.strokeOval(620, 420, 80, 50);
+        gc.setFill(Color.web("#0288D1", 0.7));
+        gc.setFont(Font.font("Arial", 8));
+        gc.fillText("Pond", 648, 450);
+    }
+
+    // ── Draw Main Highway ────────────────────────────────
+    private void drawHighway(GraphicsContext gc) {
+        // shadow
+        gc.setStroke(Color.web("#9E9E9E"));
+        gc.setLineWidth(14);
+        gc.strokeLine(400, 40, 400, 580);
+
+        // road surface
+        gc.setStroke(Color.web("#EEEEEE"));
+        gc.setLineWidth(10);
+        gc.strokeLine(400, 40, 400, 580);
+
+        // center dashed line
+        gc.setStroke(Color.web("#FDD835"));
+        gc.setLineWidth(1.5);
+        gc.setLineDashes(12, 8);
+        gc.strokeLine(400, 40, 400, 580);
+        gc.setLineDashes(0);
+
+        // highway label
+        gc.save();
+        gc.translate(418, 180);
+        gc.rotate(90);
+        gc.setFill(Color.web("#757575"));
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 9));
+        gc.fillText(
+            "Dhaka-Mymensingh Highway", 0, 0);
+        gc.restore();
     }
 
     // ── Draw All Roads ───────────────────────────────────
     private void drawAllRoads(GraphicsContext gc) {
+        // road shadow layer
         gc.setStroke(Color.web("#BDBDBD"));
+        gc.setLineWidth(5);
+
+        drawRoad(gc, "NAT_UNIV",    "BIG_BAZAR");
+        drawRoad(gc, "BIG_BAZAR",   "BOARD_BAZAR");
+        drawRoad(gc, "BOARD_BAZAR", "UNI_GEARS");
+        drawRoad(gc, "BOARD_BAZAR", "HOSPITAL");
+        drawRoad(gc, "IUT",         "BIG_BAZAR");
+        drawRoad(gc, "IUT",         "RAJBARI");
+        drawRoad(gc, "IUT",         "ROAD_30FEET");
+        drawRoad(gc, "BIG_BAZAR",   "BOTTOLA");
+        drawRoad(gc, "BOTTOLA",     "CHANDNA");
+        drawRoad(gc, "BOTTOLA",     "UNI_GEARS");
+        drawRoad(gc, "NAT_UNIV",    "RAJBARI");
+        drawRoad(gc, "NAT_UNIV",    "KONABARI");
+        drawRoad(gc, "NAT_UNIV",    "CHANDNA");
+        drawRoad(gc, "RAJBARI",     "KONABARI");
+        drawRoad(gc, "RAJBARI",     "BIG_BAZAR");
+        drawRoad(gc, "KONABARI",    "BSCIC");
+        drawRoad(gc, "KONABARI",    "ROAD_30FEET");
+        drawRoad(gc, "KONABARI",    "CHANDNA");
+        drawRoad(gc, "CHANDNA",     "MAWNA");
+        drawRoad(gc, "BSCIC",       "MAWNA");
+        drawRoad(gc, "ROAD_30FEET", "BSCIC");
+        drawRoad(gc, "ROAD_30FEET", "HOSPITAL");
+
+        // road surface overlay
+        gc.setStroke(Color.web("#E0E0E0"));
         gc.setLineWidth(3);
 
-        drawRoad(gc, "IUT",       "BOARD_INT");
-        drawRoad(gc, "BOARD_INT", "BOARD_BAZ");
-        drawRoad(gc, "BOARD_INT", "RAJBARI");
-        drawRoad(gc, "BOARD_INT", "HOSPITAL");
-        drawRoad(gc, "BOARD_BAZ", "GAZIPUR");
-        drawRoad(gc, "BOARD_BAZ", "HOSPITAL");
-        drawRoad(gc, "RAJBARI",   "KONABARI");
-        drawRoad(gc, "RAJBARI",   "GAZIPUR");
-        drawRoad(gc, "GAZIPUR",   "CHANDNA");
-        drawRoad(gc, "KONABARI",  "BSCIC");
-        drawRoad(gc, "KONABARI",  "CHANDNA");
-        drawRoad(gc, "CHANDNA",   "MAWNA");
-        drawRoad(gc, "BSCIC",     "MAWNA");
+        drawRoad(gc, "NAT_UNIV",    "BIG_BAZAR");
+        drawRoad(gc, "BIG_BAZAR",   "BOARD_BAZAR");
+        drawRoad(gc, "BOARD_BAZAR", "UNI_GEARS");
+        drawRoad(gc, "BOARD_BAZAR", "HOSPITAL");
+        drawRoad(gc, "IUT",         "BIG_BAZAR");
+        drawRoad(gc, "IUT",         "RAJBARI");
+        drawRoad(gc, "IUT",         "ROAD_30FEET");
+        drawRoad(gc, "BIG_BAZAR",   "BOTTOLA");
+        drawRoad(gc, "BOTTOLA",     "CHANDNA");
+        drawRoad(gc, "BOTTOLA",     "UNI_GEARS");
+        drawRoad(gc, "NAT_UNIV",    "RAJBARI");
+        drawRoad(gc, "NAT_UNIV",    "KONABARI");
+        drawRoad(gc, "NAT_UNIV",    "CHANDNA");
+        drawRoad(gc, "RAJBARI",     "KONABARI");
+        drawRoad(gc, "RAJBARI",     "BIG_BAZAR");
+        drawRoad(gc, "KONABARI",    "BSCIC");
+        drawRoad(gc, "KONABARI",    "ROAD_30FEET");
+        drawRoad(gc, "KONABARI",    "CHANDNA");
+        drawRoad(gc, "CHANDNA",     "MAWNA");
+        drawRoad(gc, "BSCIC",       "MAWNA");
+        drawRoad(gc, "ROAD_30FEET", "BSCIC");
+        drawRoad(gc, "ROAD_30FEET", "HOSPITAL");
     }
 
     // ── Draw Highlighted Path ────────────────────────────
     private void drawHighlightedPath(
             GraphicsContext gc,
             List<String> path) {
+        // glow effect
+        gc.setStroke(Color.web("#FF8A80", 0.5));
+        gc.setLineWidth(12);
+        for (int i = 0; i < path.size()-1; i++) {
+            drawRoad(gc,
+                path.get(i), path.get(i+1));
+        }
+        // main highlight
         gc.setStroke(Color.web("#E94560"));
         gc.setLineWidth(6);
-        for (int i = 0; i < path.size() - 1; i++) {
+        for (int i = 0; i < path.size()-1; i++) {
             drawRoad(gc,
-                path.get(i),
-                path.get(i + 1));
+                path.get(i), path.get(i+1));
         }
+        // center dashed line
+        gc.setStroke(Color.web("#FFFFFF", 0.6));
+        gc.setLineWidth(1.5);
+        gc.setLineDashes(8, 6);
+        for (int i = 0; i < path.size()-1; i++) {
+            drawRoad(gc,
+                path.get(i), path.get(i+1));
+        }
+        gc.setLineDashes(0);
     }
 
     // ── Draw Single Road ─────────────────────────────────
@@ -352,28 +486,59 @@ public class MapController {
             to.getX(),   to.getY());
     }
 
-    // ── Draw Distance Labels on Roads ────────────────────
+    // ── Draw Distance Labels ─────────────────────────────
     private void drawDistanceLabels(
             GraphicsContext gc) {
         gc.setFill(Color.web("#6B7280"));
         gc.setFont(Font.font("Arial", 9));
 
-        drawDistLabel(gc,"IUT","BOARD_INT","0.5km");
-        drawDistLabel(gc,"BOARD_INT","BOARD_BAZ","1.2km");
-        drawDistLabel(gc,"BOARD_INT","RAJBARI","1.5km");
-        drawDistLabel(gc,"BOARD_INT","HOSPITAL","0.8km");
-        drawDistLabel(gc,"BOARD_BAZ","GAZIPUR","2.0km");
-        drawDistLabel(gc,"BOARD_BAZ","HOSPITAL","0.6km");
-        drawDistLabel(gc,"RAJBARI","KONABARI","2.5km");
-        drawDistLabel(gc,"RAJBARI","GAZIPUR","1.8km");
-        drawDistLabel(gc,"GAZIPUR","CHANDNA","3.0km");
-        drawDistLabel(gc,"KONABARI","BSCIC","1.8km");
-        drawDistLabel(gc,"KONABARI","CHANDNA","2.0km");
-        drawDistLabel(gc,"CHANDNA","MAWNA","2.2km");
-        drawDistLabel(gc,"BSCIC","MAWNA","3.5km");
+        drawDistLabel(gc, "NAT_UNIV",
+            "BIG_BAZAR",    "1.2km");
+        drawDistLabel(gc, "BIG_BAZAR",
+            "BOARD_BAZAR",  "0.8km");
+        drawDistLabel(gc, "BOARD_BAZAR",
+            "UNI_GEARS",    "1.5km");
+        drawDistLabel(gc, "BOARD_BAZAR",
+            "HOSPITAL",     "0.5km");
+        drawDistLabel(gc, "IUT",
+            "BIG_BAZAR",    "0.8km");
+        drawDistLabel(gc, "IUT",
+            "RAJBARI",      "1.2km");
+        drawDistLabel(gc, "IUT",
+            "ROAD_30FEET",  "1.0km");
+        drawDistLabel(gc, "BIG_BAZAR",
+            "BOTTOLA",      "1.5km");
+        drawDistLabel(gc, "BOTTOLA",
+            "CHANDNA",      "2.0km");
+        drawDistLabel(gc, "BOTTOLA",
+            "UNI_GEARS",    "1.8km");
+        drawDistLabel(gc, "NAT_UNIV",
+            "RAJBARI",      "1.0km");
+        drawDistLabel(gc, "NAT_UNIV",
+            "KONABARI",     "1.5km");
+        drawDistLabel(gc, "NAT_UNIV",
+            "CHANDNA",      "2.5km");
+        drawDistLabel(gc, "RAJBARI",
+            "KONABARI",     "1.2km");
+        drawDistLabel(gc, "RAJBARI",
+            "BIG_BAZAR",    "1.0km");
+        drawDistLabel(gc, "KONABARI",
+            "BSCIC",        "1.0km");
+        drawDistLabel(gc, "KONABARI",
+            "ROAD_30FEET",  "1.5km");
+        drawDistLabel(gc, "KONABARI",
+            "CHANDNA",      "2.5km");
+        drawDistLabel(gc, "CHANDNA",
+            "MAWNA",        "2.2km");
+        drawDistLabel(gc, "BSCIC",
+            "MAWNA",        "3.5km");
+        drawDistLabel(gc, "ROAD_30FEET",
+            "BSCIC",        "1.2km");
+        drawDistLabel(gc, "ROAD_30FEET",
+            "HOSPITAL",     "2.0km");
     }
 
-    // ── Draw Distance Label on Midpoint of Road ──────────
+    // ── Draw Distance Label ──────────────────────────────
     private void drawDistLabel(GraphicsContext gc,
                                 String fromId,
                                 String toId,
@@ -385,12 +550,11 @@ public class MapController {
         double mx = (from.getX() + to.getX()) / 2;
         double my = (from.getY() + to.getY()) / 2;
 
-        // small white background
-        gc.setFill(Color.web("#FFFFFF", 0.7));
-        gc.fillRoundRect(mx-12, my-9, 30, 13, 4, 4);
-
+        gc.setFill(Color.web("#FFFFFF", 0.75));
+        gc.fillRoundRect(
+            mx-14, my-9, 32, 13, 4, 4);
         gc.setFill(Color.web("#6B7280"));
-        gc.fillText(label, mx - 10, my + 1);
+        gc.fillText(label, mx-12, my+1);
     }
 
     // ── Draw All Nodes ───────────────────────────────────
@@ -402,103 +566,217 @@ public class MapController {
             Location loc = entry.getValue();
 
             Color nodeColor;
+            Color borderColor;
+
             if (path != null && !path.isEmpty()) {
                 if (id.equals(path.get(0))) {
-                    // start = green
-                    nodeColor = Color.web("#2E7D32");
+                    nodeColor   =
+                        Color.web("#2E7D32");
+                    borderColor =
+                        Color.web("#A5D6A7");
                 } else if (id.equals(
                         path.get(path.size()-1))) {
-                    // end = red
-                    nodeColor = Color.web("#E94560");
+                    nodeColor   =
+                        Color.web("#E94560");
+                    borderColor =
+                        Color.web("#FFCDD2");
                 } else if (path.contains(id)) {
-                    // on path = orange
-                    nodeColor = Color.web("#F5A623");
+                    nodeColor   =
+                        Color.web("#F5A623");
+                    borderColor =
+                        Color.web("#FFE082");
                 } else {
-                    // normal = blue
-                    nodeColor = Color.web("#1565C0");
+                    nodeColor   =
+                        Color.web("#1565C0");
+                    borderColor =
+                        Color.web("#90CAF9");
                 }
             } else {
-                nodeColor = Color.web("#1565C0");
+                nodeColor   = Color.web("#1565C0");
+                borderColor = Color.web("#90CAF9");
             }
-            drawNode(gc, loc, nodeColor);
+            drawNode(gc, loc,
+                nodeColor, borderColor);
         }
     }
 
     // ── Draw Single Node ─────────────────────────────────
     private void drawNode(GraphicsContext gc,
                            Location loc,
-                           Color color) {
+                           Color color,
+                           Color borderColor) {
         double x = loc.getX();
         double y = loc.getY();
 
-        // shadow
-        gc.setFill(Color.web("#00000033"));
-        gc.fillOval(x-11, y-9, 24, 24);
+        // drop shadow
+        gc.setFill(Color.web("#00000040"));
+        gc.fillOval(x-10, y-8, 22, 22);
 
-        // filled circle
+        // outer ring
+        gc.setFill(borderColor);
+        gc.fillOval(x-13, y-13, 26, 26);
+
+        // main circle
         gc.setFill(color);
-        gc.fillOval(x-12, y-12, 24, 24);
+        gc.fillOval(x-10, y-10, 20, 20);
 
-        // white border
-        gc.setStroke(Color.WHITE);
-        gc.setLineWidth(2.5);
-        gc.strokeOval(x-12, y-12, 24, 24);
+        // inner white dot
+        gc.setFill(Color.web("#FFFFFF", 0.5));
+        gc.fillOval(x-4, y-6, 7, 7);
 
-        // location name background
-        gc.setFill(Color.web("#FFFFFF", 0.75));
-        gc.fillRoundRect(x+14, y-10, 130, 16, 4, 4);
+        // name label background
+        gc.setFill(Color.web("#FFFFFF", 0.92));
+        gc.fillRoundRect(
+            x+13, y-11, 140, 18, 5, 5);
 
-        // location name
+        // name label border
+        gc.setStroke(color);
+        gc.setLineWidth(1);
+        gc.strokeRoundRect(
+            x+13, y-11, 140, 18, 5, 5);
+
+        // name text
         gc.setFill(Color.web("#1A1A2E"));
         gc.setFont(Font.font("Arial",
             FontWeight.BOLD, 11));
-        gc.fillText(loc.getName(), x+16, y+2);
+        gc.fillText(loc.getName(), x+17, y+2);
+    }
+
+    // ── Draw Compass ─────────────────────────────────────
+    private void drawCompass(GraphicsContext gc) {
+        double cx = CANVAS_W - 45;
+        double cy = 55;
+
+        // circle
+        gc.setFill(Color.web("#FFFFFF", 0.9));
+        gc.fillOval(cx-25, cy-25, 50, 50);
+        gc.setStroke(Color.web("#BDBDBD"));
+        gc.setLineWidth(1);
+        gc.strokeOval(cx-25, cy-25, 50, 50);
+
+        // N arrow red
+        gc.setFill(Color.web("#E94560"));
+        double[] xN = {cx, cx-6, cx+6};
+        double[] yN = {cy-20, cy, cy};
+        gc.fillPolygon(xN, yN, 3);
+
+        // S arrow gray
+        gc.setFill(Color.web("#9E9E9E"));
+        double[] xS = {cx, cx-6, cx+6};
+        double[] yS = {cy+20, cy, cy};
+        gc.fillPolygon(xS, yS, 3);
+
+        // N label
+        gc.setFill(Color.web("#E94560"));
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 11));
+        gc.fillText("N", cx-4, cy-22);
+    }
+
+    // ── Draw Title ───────────────────────────────────────
+    private void drawTitle(GraphicsContext gc) {
+        gc.setFill(Color.web("#1A1A2E", 0.85));
+        gc.fillRoundRect(10, 8, 320, 36, 8, 8);
+        gc.setFill(Color.WHITE);
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 16));
+        gc.fillText(
+            "📍 Board Bazar Area — Gazipur",
+            18, 32);
     }
 
     // ── Draw Legend ──────────────────────────────────────
     private void drawLegend(GraphicsContext gc) {
-        double lx = 15;
-        double ly = CANVAS_H - 110;
+        double lx = 12;
+        double ly = CANVAS_H - 145;
 
-        // legend background
-        gc.setFill(Color.web("#FFFFFF", 0.9));
+        // background
+        gc.setFill(Color.web("#FFFFFF", 0.92));
         gc.fillRoundRect(
-            lx-8, ly-22, 160, 105, 10, 10);
-        gc.setStroke(Color.web("#E5E7EB"));
+            lx-8, ly-25, 165, 140, 10, 10);
+        gc.setStroke(Color.web("#BDBDBD"));
         gc.setLineWidth(1);
         gc.strokeRoundRect(
-            lx-8, ly-22, 160, 105, 10, 10);
+            lx-8, ly-25, 165, 140, 10, 10);
 
-        // legend title
+        // title
         gc.setFill(Color.web("#1A1A2E"));
         gc.setFont(Font.font("Arial",
-            FontWeight.BOLD, 11));
-        gc.fillText("Legend", lx, ly-6);
+            FontWeight.BOLD, 12));
+        gc.fillText("🗺️ Legend", lx, ly-8);
 
-        // start
-        gc.setFill(Color.web("#2E7D32"));
-        gc.fillOval(lx, ly+2, 12, 12);
+        // items
+        String[][] items = {
+            {"#2E7D32", "Start Point"},
+            {"#E94560", "End Point"},
+            {"#F5A623", "On Route"},
+            {"#1565C0", "Location"},
+        };
+
+        for (int i = 0; i < items.length; i++) {
+            double iy = ly + 5 + i * 24;
+            gc.setFill(Color.web(items[i][0]));
+            gc.fillOval(lx, iy, 14, 14);
+            gc.setFill(Color.web("#FFFFFF", 0.4));
+            gc.fillOval(lx+3, iy+2, 6, 6);
+            gc.setFill(Color.web("#1A1A2E"));
+            gc.setFont(Font.font("Arial", 11));
+            gc.fillText(items[i][1],
+                lx+22, iy+11);
+        }
+
+        // road sample
+        gc.setStroke(Color.web("#BDBDBD"));
+        gc.setLineWidth(4);
+        gc.strokeLine(lx, ly+105,
+            lx+35, ly+105);
+        gc.setStroke(Color.web("#E0E0E0"));
+        gc.setLineWidth(2.5);
+        gc.strokeLine(lx, ly+105,
+            lx+35, ly+105);
         gc.setFill(Color.web("#1A1A2E"));
         gc.setFont(Font.font("Arial", 11));
-        gc.fillText("Start Point", lx+18, ly+12);
+        gc.fillText("Road", lx+42, ly+109);
 
-        // end
-        gc.setFill(Color.web("#E94560"));
-        gc.fillOval(lx, ly+22, 12, 12);
+        // route sample
+        gc.setStroke(Color.web("#E94560"));
+        gc.setLineWidth(4);
+        gc.strokeLine(lx+90, ly+105,
+            lx+125, ly+105);
         gc.setFill(Color.web("#1A1A2E"));
-        gc.fillText("End Point", lx+18, ly+32);
+        gc.fillText("Route", lx+130, ly+109);
+    }
 
-        // on path
-        gc.setFill(Color.web("#F5A623"));
-        gc.fillOval(lx, ly+42, 12, 12);
-        gc.setFill(Color.web("#1A1A2E"));
-        gc.fillText("On Route", lx+18, ly+52);
+    // ── Draw Scale Bar ───────────────────────────────────
+    private void drawScaleBar(GraphicsContext gc) {
+        double sx = CANVAS_W - 160;
+        double sy = CANVAS_H - 25;
 
-        // normal
-        gc.setFill(Color.web("#1565C0"));
-        gc.fillOval(lx, ly+62, 12, 12);
+        gc.setFill(Color.web("#FFFFFF", 0.85));
+        gc.fillRoundRect(
+            sx-8, sy-14, 155, 22, 5, 5);
+
+        // scale bar blocks
         gc.setFill(Color.web("#1A1A2E"));
-        gc.fillText("Location", lx+18, ly+72);
+        gc.fillRect(sx, sy-4, 60, 6);
+        gc.setFill(Color.WHITE);
+        gc.fillRect(sx+20, sy-4, 20, 6);
+
+        // ticks
+        gc.setStroke(Color.web("#1A1A2E"));
+        gc.setLineWidth(1.5);
+        gc.strokeLine(sx, sy-6, sx, sy+4);
+        gc.strokeLine(
+            sx+60, sy-6, sx+60, sy+4);
+
+        // labels
+        gc.setFill(Color.web("#1A1A2E"));
+        gc.setFont(Font.font("Arial",
+            FontWeight.BOLD, 9));
+        gc.fillText("0", sx-3, sy+14);
+        gc.fillText("1km", sx+50, sy+14);
+        gc.fillText("Scale: ~1km",
+            sx+70, sy+3);
     }
 
     // ── Open New Screen ──────────────────────────────────
