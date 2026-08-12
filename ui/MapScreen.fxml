@@ -16,144 +16,247 @@
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="ui.MapController"
-    prefWidth="1000"
-    prefHeight="680">
+    prefWidth="1100"
+    prefHeight="720">
 
     <!-- ── TOP TOOLBAR ── -->
     <top>
         <HBox
             styleClass="top-bar"
             alignment="CENTER_LEFT"
-            spacing="10">
-            <padding>
-                <Insets top="10" right="15"
-                        bottom="10" left="15"/>
-            </padding>
+            spacing="8"
+            minHeight="52"
+            maxHeight="52">
 
-            <Label
-                text="🛺 RickshawGo"
-                styleClass="app-title"/>
+            <VBox alignment="CENTER_LEFT"
+                  spacing="1">
+                <padding>
+                    <Insets left="20"/>
+                </padding>
+                <Label
+                    text="🛺 RickshawGo"
+                    styleClass="app-title"/>
+                <Label
+                    text="Board Bazar, Gazipur"
+                    styleClass="app-subtitle"/>
+            </VBox>
 
             <Region HBox.hgrow="ALWAYS"/>
 
             <Button
                 fx:id="historyBtn"
-                text="📋 History"
-                styleClass="btn-secondary"
+                text="📋  History"
+                styleClass="btn-toolbar"
                 onAction="#onOpenHistory"/>
-
             <Button
                 fx:id="savedBtn"
-                text="⭐ Saved"
-                styleClass="btn-secondary"
+                text="⭐  Saved"
+                styleClass="btn-toolbar"
                 onAction="#onOpenSaved"/>
-
             <Button
                 fx:id="settingsBtn"
-                text="⚙️ Settings"
-                styleClass="btn-secondary"
-                onAction="#onOpenSettings"/>
+                text="⚙️  Settings"
+                styleClass="btn-toolbar"
+                onAction="#onOpenSettings">
+                <HBox.margin>
+                    <Insets right="10"/>
+                </HBox.margin>
+            </Button>
 
         </HBox>
     </top>
 
-    <!-- ── LEFT SIDE PANEL ── -->
+    <!-- ── LEFT SIDE PANEL (Scrollable) ── -->
     <left>
-        <VBox
-            styleClass="side-panel"
-            spacing="8"
-            prefWidth="210">
-            <padding>
-                <Insets top="12" right="12"
-                        bottom="12" left="12"/>
-            </padding>
+        <ScrollPane
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            vbarPolicy="AS_NEEDED"
+            prefWidth="230"
+            minWidth="230"
+            maxWidth="230"
+            style="-fx-background-color: white;
+                   -fx-border-color: #E2E8F0;
+                   -fx-border-width: 0 1 0 0;">
 
-            <!-- Panel Title -->
-            <Label
-                text="🗺️ Select Route"
-                styleClass="panel-title"/>
+            <content>
+                <VBox
+                    styleClass="side-panel"
+                    spacing="0"
+                    prefWidth="210">
 
-            <Separator/>
+                    <!-- ROUTE PLANNER -->
+                    <Label
+                        text="ROUTE PLANNER"
+                        styleClass="label-section">
+                        <VBox.margin>
+                            <Insets bottom="10"/>
+                        </VBox.margin>
+                    </Label>
 
-            <!-- From Location -->
-            <Label text="📍 From:"/>
-            <ComboBox
-                fx:id="fromCombo"
-                prefWidth="185"
-                promptText="Select start..."/>
+                    <!-- From -->
+                    <Label
+                        text="From"
+                        styleClass="muted-label">
+                        <VBox.margin>
+                            <Insets bottom="4"/>
+                        </VBox.margin>
+                    </Label>
+                    <ComboBox
+                        fx:id="fromCombo"
+                        prefWidth="198"
+                        promptText="Select start point...">
+                        <VBox.margin>
+                            <Insets bottom="12"/>
+                        </VBox.margin>
+                    </ComboBox>
 
-            <!-- To Location -->
-            <Label text="📍 To:"/>
-            <ComboBox
-                fx:id="toCombo"
-                prefWidth="185"
-                promptText="Select destination..."/>
+                    <!-- To -->
+                    <Label
+                        text="To"
+                        styleClass="muted-label">
+                        <VBox.margin>
+                            <Insets bottom="4"/>
+                        </VBox.margin>
+                    </Label>
+                    <ComboBox
+                        fx:id="toCombo"
+                        prefWidth="198"
+                        promptText="Select destination...">
+                        <VBox.margin>
+                            <Insets bottom="14"/>
+                        </VBox.margin>
+                    </ComboBox>
 
-            <!-- Buttons -->
-            <Button
-                fx:id="findRouteBtn"
-                text="🔍 Find Route"
-                styleClass="btn-primary"
-                prefWidth="185"
-                onAction="#onFindRoute"/>
+                    <!-- Find Route -->
+                    <Button
+                        fx:id="findRouteBtn"
+                        text="Find Route"
+                        styleClass="btn-primary"
+                        prefWidth="198"
+                        onAction="#onFindRoute">
+                        <VBox.margin>
+                            <Insets bottom="6"/>
+                        </VBox.margin>
+                    </Button>
 
-            <Button
-                fx:id="clearBtn"
-                text="🔄 Clear"
-                styleClass="btn-secondary"
-                prefWidth="185"
-                onAction="#onClear"/>
+                    <!-- Clear -->
+                    <Button
+                        fx:id="clearBtn"
+                        text="Clear"
+                        styleClass="btn-secondary"
+                        prefWidth="198"
+                        onAction="#onClear">
+                        <VBox.margin>
+                            <Insets bottom="18"/>
+                        </VBox.margin>
+                    </Button>
 
-            <Separator/>
+                    <Separator>
+                        <VBox.margin>
+                            <Insets bottom="18"/>
+                        </VBox.margin>
+                    </Separator>
 
-            <!-- Results -->
-            <Label
-                text="📊 Results"
-                styleClass="panel-title"/>
+                    <!-- RESULTS -->
+                    <Label
+                        text="RESULTS"
+                        styleClass="label-section">
+                        <VBox.margin>
+                            <Insets bottom="12"/>
+                        </VBox.margin>
+                    </Label>
 
-            <Label text="📏 Distance:"/>
-            <Label
-                fx:id="distanceLabel"
-                text="-- km"
-                styleClass="result-label"/>
+                    <!-- Distance Card -->
+                    <VBox
+                        styleClass="card"
+                        spacing="2">
+                        <VBox.margin>
+                            <Insets bottom="8"/>
+                        </VBox.margin>
+                        <Label
+                            text="Distance"
+                            styleClass="muted-label"/>
+                        <Label
+                            fx:id="distanceLabel"
+                            text="-- km"
+                            styleClass="result-label"/>
+                    </VBox>
 
-            <Label text="💰 Estimated Fare:"/>
-            <Label
-                fx:id="fareLabel"
-                text="-- BDT"
-                styleClass="fare-label"/>
+                    <!-- Fare Card -->
+                    <VBox
+                        styleClass="card"
+                        spacing="2">
+                        <VBox.margin>
+                            <Insets bottom="8"/>
+                        </VBox.margin>
+                        <Label
+                            text="Estimated Fare"
+                            styleClass="muted-label"/>
+                        <Label
+                            fx:id="fareLabel"
+                            text="-- BDT"
+                            styleClass="fare-label"/>
+                    </VBox>
 
-            <Label text="⏰ Ride Type:"/>
-            <Label
-                fx:id="timeLabel"
-                text="--"
-                styleClass="result-label"/>
+                    <!-- Ride Type Card -->
+                    <VBox
+                        styleClass="card"
+                        spacing="2">
+                        <VBox.margin>
+                            <Insets bottom="8"/>
+                        </VBox.margin>
+                        <Label
+                            text="Ride Type"
+                            styleClass="muted-label"/>
+                        <Label
+                            fx:id="timeLabel"
+                            text="--"
+                            styleClass="result-label"/>
+                    </VBox>
 
-            <Separator/>
+                    <!-- Route Card -->
+                    <VBox
+                        styleClass="card"
+                        spacing="2">
+                        <VBox.margin>
+                            <Insets bottom="18"/>
+                        </VBox.margin>
+                        <Label
+                            text="Route"
+                            styleClass="muted-label"/>
+                        <Label
+                            fx:id="routeLabel"
+                            text="--"
+                            styleClass="muted-label"
+                            wrapText="true"/>
+                    </VBox>
 
-            <!-- Route Path -->
-            <Label text="🛣️ Route:"/>
-            <Label
-                fx:id="routeLabel"
-                text="--"
-                styleClass="result-label"
-                wrapText="true"/>
+                    <Separator>
+                        <VBox.margin>
+                            <Insets bottom="18"/>
+                        </VBox.margin>
+                    </Separator>
 
-            <Separator/>
+                    <!-- Save Button -->
+                    <Button
+                        fx:id="saveBtn"
+                        text="💾  Save Ride"
+                        styleClass="btn-success"
+                        prefWidth="198"
+                        disable="true"
+                        onAction="#onSaveRide">
+                        <VBox.margin>
+                            <Insets bottom="10"/>
+                        </VBox.margin>
+                    </Button>
 
-            <!-- Save Button -->
-            <Button
-                fx:id="saveBtn"
-                text="💾 Save Ride"
-                styleClass="btn-primary"
-                prefWidth="185"
-                disable="true"
-                onAction="#onSaveRide"/>
-
-        </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
     </left>
 
-    <!-- ── CENTER MAP CANVAS ── -->
+    <!-- ── CENTER MAP ── -->
     <center>
         <ScrollPane
             fitToWidth="true"
@@ -161,11 +264,12 @@
             pannable="true"
             styleClass="map-container">
             <content>
-                <StackPane styleClass="map-container">
+                <StackPane
+                    styleClass="map-container">
                     <Canvas
                         fx:id="mapCanvas"
-                        width="780"
-                        height="620"/>
+                        width="860"
+                        height="660"/>
                 </StackPane>
             </content>
         </ScrollPane>
