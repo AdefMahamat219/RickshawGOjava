@@ -14,176 +14,209 @@
 <BorderPane
     xmlns:fx="http://javafx.com/fxml"
     fx:controller="ui.SettingsController"
-    prefWidth="450"
-    prefHeight="500">
+    prefWidth="460"
+    prefHeight="520">
 
-    <!-- ── TOP TOOLBAR ── -->
+    <!-- TOP -->
     <top>
         <HBox
             styleClass="top-bar"
             alignment="CENTER_LEFT"
             spacing="10">
             <padding>
-                <Insets top="10" right="15"
-                        bottom="10" left="15"/>
+                <Insets top="0" right="20"
+                        bottom="0" left="20"/>
             </padding>
-
-            <Label
-                text="⚙️ Settings"
-                styleClass="app-title"/>
-
+            <VBox alignment="CENTER_LEFT"
+                  spacing="1">
+                <Label
+                    text="⚙️ Settings"
+                    styleClass="app-title"/>
+                <Label
+                    text="Customize fare rates"
+                    styleClass="app-subtitle"/>
+            </VBox>
             <Region HBox.hgrow="ALWAYS"/>
-
             <Button
                 text="← Back"
-                styleClass="btn-secondary"
+                styleClass="btn-toolbar"
                 onAction="#onBack"/>
-
         </HBox>
     </top>
 
-    <!-- ── CENTER CONTENT ── -->
+    <!-- CENTER -->
     <center>
-        <VBox spacing="15">
+        <VBox spacing="0">
             <padding>
-                <Insets top="20" right="20"
-                        bottom="20" left="20"/>
+                <Insets top="20" right="24"
+                        bottom="20" left="24"/>
             </padding>
 
-            <!-- Fare Rates Section -->
+            <!-- Fare Rates -->
             <Label
-                text="💰 Fare Rates"
-                styleClass="panel-title"/>
+                text="FARE RATES"
+                styleClass="label-section">
+                <VBox.margin>
+                    <Insets bottom="14"/>
+                </VBox.margin>
+            </Label>
 
-            <Separator/>
+            <GridPane hgap="12" vgap="12">
+                <VBox.margin>
+                    <Insets bottom="20"/>
+                </VBox.margin>
 
-            <GridPane hgap="15" vgap="12">
-
-                <!-- Base Rate -->
                 <Label
-                    text="Base Rate (first km):"
+                    text="Base Rate (first km)"
+                    styleClass="muted-label"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="0"/>
-                <HBox
-                    spacing="5"
-                    alignment="CENTER_LEFT"
-                    GridPane.columnIndex="1"
-                    GridPane.rowIndex="0">
+                <HBox spacing="6"
+                      alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="0">
                     <TextField
                         fx:id="baseRateField"
                         prefWidth="100"/>
-                    <Label text="BDT"/>
+                    <Label
+                        text="BDT"
+                        styleClass="muted-label"/>
                 </HBox>
 
-                <!-- Per KM Rate -->
                 <Label
-                    text="Rate per KM:"
+                    text="Rate per KM"
+                    styleClass="muted-label"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="1"/>
-                <HBox
-                    spacing="5"
-                    alignment="CENTER_LEFT"
-                    GridPane.columnIndex="1"
-                    GridPane.rowIndex="1">
+                <HBox spacing="6"
+                      alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="1">
                     <TextField
                         fx:id="perKmRateField"
                         prefWidth="100"/>
-                    <Label text="BDT / km"/>
+                    <Label
+                        text="BDT / km"
+                        styleClass="muted-label"/>
                 </HBox>
 
-                <!-- Night Multiplier -->
                 <Label
-                    text="Night Ride Multiplier:"
+                    text="Night Multiplier"
+                    styleClass="muted-label"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="2"/>
-                <HBox
-                    spacing="5"
-                    alignment="CENTER_LEFT"
-                    GridPane.columnIndex="1"
-                    GridPane.rowIndex="2">
+                <HBox spacing="6"
+                      alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="2">
                     <TextField
                         fx:id="nightMultField"
                         prefWidth="100"/>
-                    <Label text="×"/>
+                    <Label
+                        text="×"
+                        styleClass="muted-label"/>
                 </HBox>
 
-                <!-- Peak Multiplier -->
                 <Label
-                    text="Peak Hour Multiplier:"
+                    text="Peak Hour Multiplier"
+                    styleClass="muted-label"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="3"/>
-                <HBox
-                    spacing="5"
-                    alignment="CENTER_LEFT"
-                    GridPane.columnIndex="1"
-                    GridPane.rowIndex="3">
+                <HBox spacing="6"
+                      alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="3">
                     <TextField
                         fx:id="peakMultField"
                         prefWidth="100"/>
-                    <Label text="×"/>
+                    <Label
+                        text="×"
+                        styleClass="muted-label"/>
                 </HBox>
 
             </GridPane>
 
-            <Separator/>
+            <Separator>
+                <VBox.margin>
+                    <Insets bottom="20"/>
+                </VBox.margin>
+            </Separator>
 
-            <!-- Night Hours Section -->
+            <!-- Night Hours -->
             <Label
-                text="🌙 Night Hours"
-                styleClass="panel-title"/>
+                text="NIGHT HOURS"
+                styleClass="label-section">
+                <VBox.margin>
+                    <Insets bottom="14"/>
+                </VBox.margin>
+            </Label>
 
-            <GridPane hgap="15" vgap="12">
+            <GridPane hgap="12" vgap="12">
+                <VBox.margin>
+                    <Insets bottom="20"/>
+                </VBox.margin>
 
-                <!-- Night Start -->
                 <Label
-                    text="Night Starts At:"
+                    text="Night Starts At"
+                    styleClass="muted-label"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="0"/>
-                <HBox
-                    spacing="5"
-                    alignment="CENTER_LEFT"
-                    GridPane.columnIndex="1"
-                    GridPane.rowIndex="0">
+                <HBox spacing="6"
+                      alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="0">
                     <TextField
                         fx:id="nightStartField"
                         prefWidth="100"/>
-                    <Label text=":00 (24hr)"/>
+                    <Label
+                        text=":00 (24hr)"
+                        styleClass="muted-label"/>
                 </HBox>
 
-                <!-- Night End -->
                 <Label
-                    text="Night Ends At:"
+                    text="Night Ends At"
+                    styleClass="muted-label"
                     GridPane.columnIndex="0"
                     GridPane.rowIndex="1"/>
-                <HBox
-                    spacing="5"
-                    alignment="CENTER_LEFT"
-                    GridPane.columnIndex="1"
-                    GridPane.rowIndex="1">
+                <HBox spacing="6"
+                      alignment="CENTER_LEFT"
+                      GridPane.columnIndex="1"
+                      GridPane.rowIndex="1">
                     <TextField
                         fx:id="nightEndField"
                         prefWidth="100"/>
-                    <Label text=":00 (24hr)"/>
+                    <Label
+                        text=":00 (24hr)"
+                        styleClass="muted-label"/>
                 </HBox>
 
             </GridPane>
 
-            <Separator/>
+            <Separator>
+                <VBox.margin>
+                    <Insets bottom="16"/>
+                </VBox.margin>
+            </Separator>
 
-            <!-- Status Label -->
+            <!-- Status -->
             <Label
                 fx:id="statusLabel"
                 text=""
-                styleClass="result-label"/>
+                styleClass="success-label">
+                <VBox.margin>
+                    <Insets bottom="16"/>
+                </VBox.margin>
+            </Label>
 
-            <!-- Bottom Buttons -->
-            <HBox spacing="10" alignment="CENTER_RIGHT">
+            <!-- Buttons -->
+            <HBox spacing="8"
+                  alignment="CENTER_RIGHT">
                 <Button
-                    text="🔄 Reset Default"
+                    text="Reset Default"
                     styleClass="btn-secondary"
                     onAction="#onResetDefault"/>
                 <Button
-                    text="💾 Save Settings"
+                    text="Save Settings"
                     styleClass="btn-primary"
                     onAction="#onSaveSettings"/>
             </HBox>
