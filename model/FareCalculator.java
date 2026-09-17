@@ -11,8 +11,8 @@ public class FareCalculator {
     private static double PEAK_MULTIPLIER  = 1.2;   // 20% extra at peak hours
 
     // ── Night & Peak Hours ───────────────────────────────
-    private static final int NIGHT_START   = 21;    // 9:00 PM
-    private static final int NIGHT_END     = 6;     // 6:00 AM
+    private static int NIGHT_START   = 21;    // 9:00 PM
+    private static int NIGHT_END     = 6;     // 6:00 AM
     private static final int PEAK_START_AM = 8;     // 8:00 AM
     private static final int PEAK_END_AM   = 10;    // 10:00 AM
     private static final int PEAK_START_PM = 17;    // 5:00 PM
@@ -60,11 +60,15 @@ public class FareCalculator {
     public static void updateRates(double baseRate,
                                    double perKmRate,
                                    double nightMultiplier,
-                                   double peakMultiplier) {
+                                   double peakMultiplier,
+                                   int nightStartHour,
+                                   int nightEndHour) {
         BASE_RATE        = baseRate;
         PER_KM_RATE      = perKmRate;
         NIGHT_MULTIPLIER = nightMultiplier;
         PEAK_MULTIPLIER  = peakMultiplier;
+        NIGHT_START      = nightStartHour;
+        NIGHT_END        = nightEndHour;
     }
 
     // ── Get Fare Breakdown ───────────────────────────────
@@ -100,4 +104,6 @@ public class FareCalculator {
     public static double getPerKmRate()       { return PER_KM_RATE; }
     public static double getNightMultiplier() { return NIGHT_MULTIPLIER; }
     public static double getPeakMultiplier()  { return PEAK_MULTIPLIER; }
+    public static int    getNightStart()      { return NIGHT_START; }
+    public static int    getNightEnd()        { return NIGHT_END; }
 }
