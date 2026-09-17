@@ -107,7 +107,8 @@ public class SettingsDAO {
             // update FareCalculator with new rates
             applySettingsToCalculator(
                 baseRate, perKmRate,
-                nightMultiplier, peakMultiplier
+                nightMultiplier, peakMultiplier,
+                nightStartHour, nightEndHour
             );
 
         } catch (SQLException e) {
@@ -171,9 +172,12 @@ public class SettingsDAO {
     private void applySettingsToCalculator(double baseRate,
                                            double perKmRate,
                                            double nightMult,
-                                           double peakMult) {
+                                           double peakMult,
+                                           int nightStartHour,
+                                           int nightEndHour) {
         model.FareCalculator.updateRates(
-            baseRate, perKmRate, nightMult, peakMult
+            baseRate, perKmRate, nightMult, peakMult,
+            nightStartHour, nightEndHour
         );
         System.out.println("✅ FareCalculator updated!");
     }
