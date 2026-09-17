@@ -90,7 +90,8 @@ public class SettingsController {
             // update FareCalculator
             FareCalculator.updateRates(
                 baseRate, perKmRate,
-                nightMult, peakMult
+                nightMult, peakMult,
+                nightStart, nightEnd
             );
 
             statusLabel.setText(
